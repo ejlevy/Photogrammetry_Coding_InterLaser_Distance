@@ -1,0 +1,62 @@
+### Non-annotated code
+# Below is the code used to measure images of baboons. See next section for the annotated version that explains the function of each line.
+
+imageName = getTitle();
+//setTool("rectangle");
+makeRectangle(1662, 924, 1620, 540);
+run("Crop");
+run("Set Measurements...", "area centroid bounding display invert redirect=None decimal=3");
+run("Split Channels");
+imageCalculator("Subtract create", imageName + " (green)", imageName + " (red)")
+setAutoThreshold("Default dark");
+//run("Threshold...");
+run("Analyze Particles...", "display exclude summarize add");
+
+### Annotated code
+# Below is the annotated code. Each line is followed by a description of what that line does and any adjustments you might need to make when adapting for your study system. These annotations are marked by a pound sign.
+
+imageName = getTitle();
+# Centers the script on the image that it's about to process
+
+//setTool("rectangle");
+# Selects the rectangle tool. 
+# You could perform this auto-crop with other tools, eg oval tool
+# If using hand-cropped images, delete this line
+
+makeRectangle(1662, 924, 1620, 540);
+# Creates a rectangle that will encompass the laser spots 
+# You can make this rectangle smaller (see Recording macro below)
+# If using hand-cropped images, delete this line
+
+run("Crop");
+# Crops the image to the coordinates indicated by previous line
+# If using hand-cropped images, delete this line
+
+run("Set Measurements...", "area centroid bounding display invert redirect=None decimal=3");
+# This was not necessary when processing baboon images, but was needed when processing hand-cropped gorilla images.
+# Under some conditions, ImageJ will flip the y-axis in the final coordinates unless this line is included
+# If the y-axis is not flipping, including this line is unnecessary but it will not change your measurements if you include it
+
+run("Split Channels");
+# Splits the image into red, green, and blue channels
+
+imageCalculator("Subtract create", imageName + " (green)", imageName + " (red)")
+# Subtracts the red channel from the green channel
+
+setAutoThreshold("Default dark");
+
+//run("Threshold...");
+# Performs an automatic light threshold, separating pixels into white or black.
+# If the script is working, you will see white or red dots where the laser points were.
+# We use following inputs and buttons:
+  # Default & Red
+  # Dark background checked
+  # Click Auto
+
+run("Analyze Particles...", "display exclude summarize add");
+# Record the coordinates of the dots.
+# We use the pre-set inputs: 
+  # Size (pixel^2): 0-Infinity; Circularity: 0.00-1.00 
+  # Show: Nothing, though this is flexible.
+  # Display results, Summarize, Add to Manager, Exclude on edges 
+
